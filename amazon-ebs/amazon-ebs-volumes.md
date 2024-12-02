@@ -66,6 +66,10 @@ cat /etc/fstab		// see my entry
 
 1. Change to the /data mount point directory
 2. Create some files and folders
+
+to prove that when we move a file to another instance, we should see the same data.
+We have data on the drive, drive mounted to our Linux instance.
+
 steps:
 	cd /data		// go directory
 	touch testfile.txt	// create file
@@ -73,15 +77,28 @@ steps:
 	ls
 	sudo mkdir myfolder
 
-to prove that when we move a file to another instance, we should see the same data.
-We have data on the drive, drive mounted to our Linux instance.
-
 ## Take a snapshot and move the volume to us-east-1b
 
 1. Take a snapshot of the data volume
-2. Create a new EBS volume from the snapshot in us-east-1b
-3. Mount the new EBS volume to the instance in us-east-1b
-4. Change to the /data mount point and view the data
 steps:
 	EC2, Volumes, select volume, Actions/Create Snapshot
 	Snapshots
+	
+2. Create a new EBS volume from the snapshot in us-east-1b
+steps:
+	EC2, Snapshots, select my snapshot, Actions/Create volume from snapshot
+		Availability Zone = us-east-1b
+		
+3. Mount the new EBS volume to the instance in us-east-1b
+steps:
+	EC2, Volumes, select my Volume, Actions/Attach volume, select Instance, Attach
+		
+4. Change to the /data mount point and view the data
+moved data between different availability zones, attached to a different instance.
+
+steps:
+	EC2, Instances, select my instance, Connect
+	command:
+		sudo lsblk -e7
+		sudo mkdir /data
+		sudo mount /dev/xvdf /data
